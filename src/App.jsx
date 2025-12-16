@@ -5,6 +5,7 @@ import AdminPage from './pages/AdminPage';
 import CreatePage from './pages/CreatePage';
 import EditPage from './pages/EditPage';
 import PropertyDetailPage from './pages/PropertyDetailPage';
+import PropertiesPage from './pages/PropertiesPage';
 import './App.css';
 
 function AppContent() {
@@ -35,6 +36,7 @@ function AppContent() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/properties" element={<PropertiesPage />} />
           <Route path="/property/:id" element={<PropertyDetailPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/create" element={<CreatePage />} />

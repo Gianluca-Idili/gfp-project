@@ -159,7 +159,7 @@ export default function HomePage() {
           <PropertyList />
 
           <div className="section-footer">
-            <Link to="/admin" className="btn-secondary">
+            <Link to="/properties" className="btn-secondary">
               <span>Vedi Tutti gli Immobili</span>
               <span>→</span>
             </Link>
