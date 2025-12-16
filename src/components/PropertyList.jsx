@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../services/supabase';
-import PropertyCard from './PropertyCard';
 
 export default function PropertyList() {
   const [properties, setProperties] = useState([]);
@@ -16,7 +16,8 @@ export default function PropertyList() {
         const { data, error: fetchError } = await supabase
           .from('properties')
           .select('*')
-          .order('created_at', { ascending: false });
+          .order('created_at', { ascending: false })
+          .limit(6);
 
         if (fetchError) {
           setError(fetchError.message);
@@ -66,18 +67,38 @@ export default function PropertyList() {
     };
   }, []);
 
-  if (loading) return <div>Caricamento...</div>;
+  if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Caricamento...</div>;
   if (error) return <div style={{ color: 'red' }}>Errore: {error}</div>;
-  if (!properties.length) return <div>Nessuna proprietà</div>;
+  if (!properties.length) return <div style={{ padding: '2rem', textAlign: 'center', color: '#999' }}>Nessuna proprietà disponibile</div>;
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
-      {properties.map((p) => (
-        <PropertyCard 
-          key={p.id} 
-          property={p}
-          onDelete={(id) => setProperties(prev => prev.filter(prop => prop.id !== id))}
-        />
+    <div className="properties-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
+      {properties.map((property) => (
+        <Link 
+          key={property.id}
+          to={`/property/${property.id}`}
+          className="property-card"
+          style={{ textDecoration: 'none' }}
+        >
+          <div className="property-card__image">
+            {property.image_url && (
+              <img src={property.image_url} alt={property.title} loading="lazy" />
+            )}
+            <span className="property-card__badge">{property.type}</span>
+          </div>
+          <div className="property-card__content">
+            <div className="property-card__price">€{property.price?.toLocaleString('it-IT')}</div>
+            <h3 className="property-card__title">{property.title}</h3>
+            {property.address && (
+              <div className="property-card__address">📍 {property.address}</div>
+            )}
+            <div className="property-card__features">
+              {property.rooms && <div className="feature"><span>🛏️</span><span>{property.rooms}</span></div>}
+              {property.bathrooms && <div className="feature"><span>🚿</span><span>{property.bathrooms}</span></div>}
+              {property.square_meters && <div className="feature"><span>📐</span><span>{property.square_meters} m²</span></div>}
+            </div>
+          </div>
+        </Link>
       ))}
     </div>
   );
